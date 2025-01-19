@@ -87,6 +87,12 @@ async function initSerialPort() {
 const app = express();
 const port = 3050;
 
+app.use((req, res, next) => {
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    next();
+});
+
+
 initSerialPort().then(sp => {
     app.get("/", (req, res) => {
         console.log("index page");
