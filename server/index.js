@@ -46,10 +46,28 @@ async function initSerialPort() {
     // circular buffer of data
     // when buffer is full, push to DB (batching to reduce DB writes)
     // then we restart from beginning of buffer
-    parser.on('data', (data) => {
+    parser.on('data', async (data) => {
         console.log('Received data:', data);
-        // Here you can process the data as needed
-        // For example, parse JSON, convert to numbers, etc.
+        
+        const token = process.env.INFLUXDB_TOKEN;
+        const url = "http://localhost:8086";
+
+        const client = new InfluxDB({ url, token });
+
+        let org = `SSGD`;
+        let bucket = `slouchii`;
+
+        let queryClient = client.getWriteApi(org, bucket);
+
+        const coords = data.split("|").map(c => Number(c));
+        const dataPoint = new Point("testing")
+            .tag("version", "v0")
+            .floatField("x", coords[0])
+            .floatField("y", coords[1])
+            .floatField("z", coords[2]);
+
+        queryClient.writePoint(dataPoint);
+        await queryClient.flush();
     });
 
     // Handle errors
@@ -104,15 +122,19 @@ initSerialPort().then(sp => {
 
         let fluxQuery = `from(bucket: "slouchii")
         |> range(start: -30d) 
-        |> filter(fn: (r) => r["_measurement"] == "measurement1")
+        |> filter(fn: (r) => r["_measurement"] == "testing")
         |> sort(columns: ["_time"], desc: true)
         |> limit(n: ${req.query["num_logs"]})`;
 
         const rows = await new Promise((resolve, reject) => {
-            let result = [];
+            let result = {};
             queryClient.queryRows(fluxQuery, {
                 next: (row, tableMeta) => {
-                    result.push(tableMeta.toObject(row));
+                    const obj = tableMeta.toObject(row);
+                    if (!(obj._time in result)) {
+                        result[obj._time] = {};
+                    }
+                    result[obj._time][obj._field] = obj._value;
                 },
                 error: reject,
                 complete: () => {
