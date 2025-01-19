@@ -4,12 +4,14 @@ html {
 
 /* Navbar styles */
 .navbar {
+    position: sticky; /* Makes the navbar sticky */
+    top: 0; /* Positions it at the top of the viewport */
+    z-index: 1000; /* Ensures it stays above other elements */
+    background-color: #ffffff; /* Background color to cover content behind */
+    padding: 10px 20px; /* Add some padding for styling */
     display: flex;
-    align-items: center;
     justify-content: space-between;
-    background-color: #fdfdfd;
-    color: #1c1c1c;
-    padding: 30px 30px;
+    align-items: center;
 }
 
 .navbar-brand a {
@@ -33,7 +35,7 @@ html {
 }
 
 .start-button:hover {
-    background-color: #333333; /* Slightly lighter black on hover */
+    background-color: #4942cd; /* Slightly lighter black on hover */
     transform: scale(1.05); /* Subtle zoom effect on hover */
 }
 
@@ -182,7 +184,7 @@ input:checked + .slider:before {
 }
 
 #scrolldown {
-  padding-top: 20px;
+  padding-top: 40px;
 }
 
 #scrolldown p {
@@ -194,4 +196,37 @@ input:checked + .slider:before {
 
 #highlight {
   color: #6C63FF;
+}
+
+.settings-navbar {
+  position: absolute;
+  top: 4rem;
+  right: 2rem;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+}
+
+.dash {
+  display: flex;
+  align-items: center;
+
+}
+
+.dash .arrowRight {
+  fill: currentColor;
+  transition: fill 0.2s ease;
+}
+
+.dash .arrowRight:hover {
+  fill: #333;
+}
+
+
+.dash svg path {
+  stroke: #333; /* Change to desired color */
+  transition: stroke 0.2s ease; /* Optional: for smooth color transition */
+}
+
+/* For hover state */
+.dash svg:hover path {
+  stroke: #333;
 }
