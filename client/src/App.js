@@ -1,33 +1,39 @@
 import "./App.css";
-import { useState, useEffect } from "react";
-import { getLogs } from "./apis/agent";
+import Navbar from "./Navbar";
+import Features from "./components/Features";
+import Footer from "./components/Footer";
 
 function App() {
-    const [count, setCount] = useState(0); // Default count to 0
-    const [logs, setLogs] = useState("");
-
-    useEffect(() => {
-        setCount(3); // Sets count to 3 on component mount
-    }, []);
-
-    const handleClick = async () => {
-        try {
-            const response = await getLogs(count); // Await the result of getLogs
-            console.log("Logs received:", response); // Logs the response data
-            setLogs(response.data);
-        } catch (error) {
-            console.error("Error fetching logs:", error);
-        }
-    };
 
     return (
         <div className="App">
-            <p>
-                This is App
-            </p>
-            <button onClick={handleClick}>Get Logs</button>
-            <p>Count: {count}</p>
-            <p>{logs}</p>
+            <Navbar />
+            <div className="center-content">
+                <p className="tagline">Slouch <i>less</i>, do more.</p>
+                <p className="tagline2">
+                    Real-time slouching alerts to keep you productive and
+                    pain-free.
+                </p>
+                <a className="start-button" href="/dashboard">
+                    Start
+                </a>
+                <a href="#scrolldown" className="scroll-indicator">
+                    ⌄
+                </a>
+            </div>
+            <div id="scrolldown" className="scrolldown-content">
+                <p>It all starts with your posture</p>
+                <video
+                    class="jw-video jw-reset"
+                    tabindex="-1"
+                    disableremoteplayback=""
+                    webkit-playsinline=""
+                    playsinline=""
+                    src="blob:https://www.spine-health.com/c7ac31b9-f90b-4fba-bca8-11d4a53c33d7"
+                ></video>
+            </div>
+            <Features />
+            <Footer />
         </div>
     );
 }
