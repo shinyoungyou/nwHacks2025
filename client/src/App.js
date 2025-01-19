@@ -7,18 +7,20 @@ function App() {
 
     return (
         <div className="App">
-            <Navbar />
+            <Navbar timer={false} main={true} />
             <div className="center-content">
-                <p className="tagline">Slouch <i>less</i>, do more.</p>
+                <p className="tagline">
+                    Slouch <i>less</i>, do more.
+                </p>
                 <p className="tagline2">
-                    Real-time slouching alerts to keep you productive and
-                    pain-free.
+                    Real-time slouching alerts to keep <br/>
+                    you productive and pain-free.
                 </p>
                 <a className="start-button" href="/dashboard">
                     Start
                 </a>
                 <a href="#scrolldown" className="scroll-indicator">
-                    ⌄
+                    <img src="arrow.png" alt="" />
                 </a>
             </div>
             <div id="scrolldown" className="scrolldown-content">
