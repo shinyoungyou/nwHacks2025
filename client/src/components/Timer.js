@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import Navbar from "../Navbar";
+import { getLogs } from "../apis/agent";
 
 const TimerContainer = styled.div`
     display: flex;
@@ -86,6 +87,13 @@ const Button = styled.button`
 `;
 
 const Timer = () => {
+    const [count, setCount] = useState(0); // Default count to 0
+    const [logs, setLogs] = useState("");
+
+    useEffect(() => {
+        setCount(3); // Sets count to 3 on component mount
+    }, []);
+
     const [timeInSeconds, setTimeInSeconds] = useState(15 * 60);
     const [isRunning, setIsRunning] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
@@ -136,6 +144,16 @@ const Timer = () => {
 
     const handleBlur = () => {
         setIsEditing(false);
+    };
+
+    const handleClick = async () => {
+        try {
+            const response = await getLogs(count); // Await the result of getLogs
+            console.log("Logs received:", response); // Logs the response data
+            setLogs(response.data);
+        } catch (error) {
+            console.error("Error fetching logs:", error);
+        }
     };
 
     return (
