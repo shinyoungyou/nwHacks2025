@@ -48,26 +48,32 @@ async function initSerialPort() {
     // then we restart from beginning of buffer
     parser.on('data', async (data) => {
         console.log('Received data:', data);
+
+        const writeToDb = async () => {
+            const token = process.env.INFLUXDB_TOKEN;
+            const url = "http://localhost:8086";
+    
+            const client = new InfluxDB({ url, token });
+    
+            let org = `SSGD`;
+            let bucket = `slouchii`;
+    
+            let queryClient = client.getWriteApi(org, bucket);
+    
+            const coords = data.split("|").map(c => Number(c));
+            const dataPoint = new Point("testing")
+                .tag("version", "v0")
+                .floatField("x", coords[0])
+                .floatField("y", coords[1])
+                .floatField("z", coords[2]);
+    
+            queryClient.writePoint(dataPoint);
+            await queryClient.flush();
+        };
         
-        const token = process.env.INFLUXDB_TOKEN;
-        const url = "http://localhost:8086";
-
-        const client = new InfluxDB({ url, token });
-
-        let org = `SSGD`;
-        let bucket = `slouchii`;
-
-        let queryClient = client.getWriteApi(org, bucket);
-
-        const coords = data.split("|").map(c => Number(c));
-        const dataPoint = new Point("testing")
-            .tag("version", "v0")
-            .floatField("x", coords[0])
-            .floatField("y", coords[1])
-            .floatField("z", coords[2]);
-
-        queryClient.writePoint(dataPoint);
-        await queryClient.flush();
+        if (data[0] !== ">") {
+            await writeToDb();
+        }
     });
 
     // Handle errors
@@ -147,16 +153,49 @@ initSerialPort().then(sp => {
         res.json(rows);
     });
 
-    app.post("/calibrate", (req, res) => {
+    app.post("/calibrate", async (req, res) => {
         // issue "calibration" command to arduino
         /*
         
         will aggregate query data from the last ~10s
         decide on recording threshold with everyone
         
-        
+        timeout for 10s?
+
+        threshold calculation based on calibration
         */
-        res.send("ya");
+        const token = process.env.INFLUXDB_TOKEN;
+        const url = "http://localhost:8086";
+
+        const client = new InfluxDB({ url, token });
+
+        let org = `SSGD`;
+        let bucket = `slouchii`;
+
+        let queryClient = client.getQueryApi(org);
+        let fluxQuery = `from(bucket: "slouchii")
+        |> range(start: -10m) 
+        |> filter(fn: (r) => r["_measurement"] == "testing")
+        |> mean()`;
+
+        const mean = await new Promise((resolve, reject) => {
+            let result = {};
+            queryClient.queryRows(fluxQuery, {
+                next: (row, tableMeta) => {
+                    const obj = tableMeta.toObject(row);
+                    result[obj._field] = obj._value;
+                },
+                error: reject,
+                complete: () => {
+                    resolve(result);
+                },
+            });
+        });
+        console.log("mean", mean);
+
+        sp.write(`${mean.x}|${mean.y}|${mean.z}\n`, "ascii");
+        sp.drain();
+        res.json(mean);
     })
     
     app.listen(port, () => {
