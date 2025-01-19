@@ -2,6 +2,7 @@ const express = require("express");
 const { SerialPort } = require('serialport');
 const { ReadlineParser } = require('@serialport/parser-readline');
 const { InfluxDB, Point } = require("@influxdata/influxdb-client");
+require("dotenv").config();
 
 async function initSerialPort() {
     const allPorts = await SerialPort.list();
