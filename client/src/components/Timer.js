@@ -194,6 +194,46 @@ const Timer = () => {
 
     useEffect(() => {
         setCount(3); // Sets count to 3 on component mount
+        const thresholdCrossed = (log) => {
+            const xCrossed = origin.x - 0.3 > log.x;
+            const zCrossed = origin.z - 0.3 < log.z;
+
+            return xCrossed && zCrossed;
+        };
+
+        const interval = setInterval(async () => {
+            try {
+                const recentLogs = await getLogs(3);
+
+                const requestAndShowNotification = async () => {
+                    // Request permission only if not already granted
+                    if (Notification.permission === "default") {
+                        const permission = await Notification.requestPermission();
+                        if (permission !== "granted") {
+                            return;
+                        }
+                    }
+        
+                    // Only show notification if permission is granted
+                    if (Notification.permission === "granted" && isRunning) {
+                        new Notification("Timer Alert", {
+                            body: "This is your 5-second notification!",
+                            icon: "/Timer.svg", // Optional: add your timer icon
+                        });
+                    }
+                };
+
+                for (const l of recentLogs) {
+                    if (thresholdCrossed(l)) {
+                        requestAndShowNotification();
+                    }
+                }
+            } catch (err) {
+                console.error("error receiving logs: ", err);
+            }
+        }, 3000);
+
+        return () => clearInterval(interval);
     }, []);
 
     useEffect(() => {
@@ -258,11 +298,6 @@ const Timer = () => {
         setTimeInSeconds(initialTime);
         setIsRunning(true);
     };
-
-    const handleThreshold = () => {
-        let xCrossed = origin.x - 0.3 > logs.x;
-        let zCrossed = origin.z + 0.3 < logs.z;
-    }
 
     return (
         <>
