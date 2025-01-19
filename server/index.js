@@ -82,12 +82,15 @@ async function initSerialPort() {
 const app = express();
 const port = 3050;
 
-initSerialPort.then(sp => {
+initSerialPort().then(sp => {
     app.get("/", (req, res) => {
         console.log("index page");
         res.send("WElcome");
     });
     
+    app.get("/logs", (req, res) => {
+        res.send(`you requested:\n - ${req.query["num_logs"]} log entries!`);
+    })
     
     app.listen(port, () => {
         console.log(`Server is running on port ${port}`);
