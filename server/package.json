@@ -10,6 +10,7 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@influxdata/influxdb-client": "^1.35.0",
     "@serialport/parser-readline": "^13.0.0",
     "axios": "^1.7.9",
     "express": "^4.21.2",

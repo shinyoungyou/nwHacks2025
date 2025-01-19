@@ -1,6 +1,7 @@
 const express = require("express");
 const { SerialPort } = require('serialport');
 const { ReadlineParser } = require('@serialport/parser-readline');
+const { InfluxDB, Point } = require("@influxdata/influxdb-client");
 
 // First, list available ports to find your Arduino
 // SerialPort.list().then(ports => {
@@ -88,8 +89,52 @@ initSerialPort().then(sp => {
         res.send("WElcome");
     });
     
-    app.get("/logs", (req, res) => {
-        res.send(`you requested:\n - ${req.query["num_logs"]} log entries!`);
+    app.get("/logs", async (req, res) => {
+        // res.send(`you requested:\n - ${req.query["num_logs"]} log entries!`);
+
+        const token = process.env.INFLUXDB_TOKEN;
+        const url = "http://localhost:8086";
+
+        const client = new InfluxDB({ url, token });
+
+        let org = `SSGD`;
+        let bucket = `slouchii`;
+
+        let queryClient = client.getQueryApi(org);
+
+        let fluxQuery = `from(bucket: "slouchii")
+        |> range(start: -30d) 
+        |> filter(fn: (r) => r["_measurement"] == "measurement1")
+        |> sort(columns: ["_time"], desc: true)
+        |> limit(n: ${req.query["num_logs"]})`;
+
+        const rows = await new Promise((resolve, reject) => {
+            let result = [];
+            queryClient.queryRows(fluxQuery, {
+                next: (row, tableMeta) => {
+                    result.push(tableMeta.toObject(row));
+                },
+                error: reject,
+                complete: () => {
+                    console.log(result);
+                    resolve(result);
+                },
+            });
+        });
+        
+        res.json(rows);
+    });
+
+    app.post("/calibrate", (req, res) => {
+        // issue "calibration" command to arduino
+        /*
+        
+        will aggregate query data from the last ~10s
+        decide on recording threshold with everyone
+        
+        
+        */
+        res.send("ya");
     })
     
     app.listen(port, () => {
