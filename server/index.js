@@ -150,7 +150,7 @@ initSerialPort().then(sp => {
         let org = `SSGD`;
         let bucket = `slouchii`;
 
-        const recordingTime = (process.env.NODE_ENV === "dev") ? "-10d" : "-10d";
+        const recordingTime = (process.env.NODE_ENV === "dev") ? "-10m" : "-10s";
 
         let queryClient = client.getQueryApi(org);
         let fluxQuery = `from(bucket: "${bucket}")
