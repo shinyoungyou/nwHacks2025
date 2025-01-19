@@ -10,17 +10,23 @@ const Navbar = ({ timer, main }) => {
     };
 
     return (
-        <nav className="navbar">
+        <nav className="navbar" style={main && {backgroundColor: "#FAF9FF"} }>
             <div className="navbar-brand">
                 <a href="/">
                     slouch<span id="highlight">ii</span>
                 </a>
             </div>
-            {main && <a className="start-button" style={{fontSize: "20px"}} href="/dashboard">
-                Start
-            </a>}
+            {main && (
+                <a
+                    className="start-button"
+                    style={{ fontSize: "20px" }}
+                    href="/dashboard"
+                >
+                    Start
+                </a>
+            )}
             {timer && (
-                <div style={{cursor: "pointer"}} onClick={toggleSettings}>
+                <div style={{ cursor: "pointer" }} onClick={toggleSettings}>
                     {" "}
                     {/* Correctly using the function */}
                     <img src="Vector2.svg" alt="Settings" />
