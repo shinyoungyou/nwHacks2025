@@ -4,6 +4,7 @@ import { getLogs } from "./apis/agent";
 
 function App() {
     const [count, setCount] = useState(0); // Default count to 0
+    const [logs, setLogs] = useState("");
 
     useEffect(() => {
         setCount(3); // Sets count to 3 on component mount
@@ -11,8 +12,9 @@ function App() {
 
     const handleClick = async () => {
         try {
-            const logs = await getLogs(count); // Await the result of getLogs
-            console.log("Logs received:", logs.data); // Logs the response data
+            const response = await getLogs(count); // Await the result of getLogs
+            console.log("Logs received:", response); // Logs the response data
+            setLogs(response.data);
         } catch (error) {
             console.error("Error fetching logs:", error);
         }
@@ -25,6 +27,7 @@ function App() {
             </p>
             <button onClick={handleClick}>Get Logs</button>
             <p>Count: {count}</p>
+            <p>{logs}</p>
         </div>
     );
 }
