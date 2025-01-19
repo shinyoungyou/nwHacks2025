@@ -19,6 +19,8 @@ async function initSerialPort() {
         }
     }
 
+    if (!serialPort) return null;
+
     // Create a parser to read lines
     const parser = serialPort.pipe(new ReadlineParser({ delimiter: '\r\n' }));
 
@@ -174,12 +176,14 @@ initSerialPort().then(sp => {
         });
         console.log("mean", mean);
 
-        sp.write(`${mean.x}|${mean.y}|${mean.z}\n`, "ascii");
-        sp.drain();
+        if (sp) {
+            sp.write(`${mean.x}|${mean.y}|${mean.z}\n`, "ascii");
+            sp.drain();
+        }
         res.json({ calibration: mean });
     });
     
     app.listen(port, () => {
         console.log(`Server is running on port ${port}`);
     });
-})
+});
