@@ -179,6 +179,22 @@ initSerialPort().then(sp => {
         }
         res.json({ calibration: mean });
     });
+
+    app.post("/settings", async (req, res) => {
+        const toggledOn = req.query["buzzer_on"];
+        
+        if (toggledOn !== "1" || toggledOn !== "0") {
+            res.status(400);
+            res.json({ "error": "query param must be binary" });
+        } else {
+            if (sp) {
+                sp.write(`B|${toggledOn}`, "ascii");
+                sp.drain();
+            }
+    
+            res.send();
+        }
+    });
     
     app.listen(port, () => {
         console.log(`Server is running on port ${port}`);

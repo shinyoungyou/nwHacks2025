@@ -34,6 +34,7 @@ struct ThresholdInfo {
 } metadata;
 
 int pressed = 0;
+bool turnBuzzerOn = true;
 
 // if x decreases AND z increases by 0.3 each, we have a SLOUCHER
 
@@ -41,7 +42,10 @@ int pressed = 0;
 
 void checkInboundData() {
   String data = Serial.readStringUntil('\n');
-  // Serial.println("Got your message: " + data);  // Send response back
+  if (data[0] == 'B') {
+    turnBuzzerOn = data[2] == '1';
+    return;
+  }
 
   // split inbound data based on delimiter "|"
   int index1 = data.indexOf("|");
@@ -107,7 +111,7 @@ void loop() {
 
   if (metadata.initialized) {
 
-    if (pressed == LOW && thresholdCrossed(double(x), double(y), double(z))) {
+    if (pressed == LOW && turnBuzzerOn && thresholdCrossed(double(x), double(y), double(z))) {
       Serial.println("> THRESHOLD CROSSED!!!!!!");
       analogWrite(BuzzerPin, 255);
     } else {
