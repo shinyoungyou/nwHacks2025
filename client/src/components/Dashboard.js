@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import Navbar from "../Navbar";
 import Progress from "./Progress";
+import { postCalibrate } from "../apis/agent";
 
 const Container = styled.div`
     display: flex;
@@ -72,6 +73,16 @@ const IllustrationImage = styled.img`
 
 function Dashboard() {
     const [currentSlide, setCurrentSlide] = useState(0);
+
+    const handleClick = async () => {
+        try {
+            const response = await postCalibrate(); // Await the result of getLogs
+            console.log("Logs received:", response); // Logs the response data
+            // setLogs(response.data);
+        } catch (error) {
+            console.error("Error fetching logs:", error);
+        }
+    };
 
     const slides = [
         {
@@ -196,7 +207,7 @@ function Dashboard() {
                         />
                     )}
                     {slides[currentSlide].showFinishButton && (
-                        <a className="start-button" href="/timer">
+                        <a onClick={handleClick} className="start-button" href="/timer">
                             Finish Calibration
                         </a>
                     )}
