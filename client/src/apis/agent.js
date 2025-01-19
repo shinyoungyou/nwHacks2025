@@ -22,10 +22,10 @@ export const postCalibrate = async () => {
     }
 };
 
-export const postSettings = async () => {
+export const postSettings = async (toggleBuzzeron) => {
     try {
         // Pass count as a query parameter
-        const response = await axios.post(`http://localhost:3050/calibrate`);
+        const response = await axios.post(`http://localhost:3050/settings?buzzer_on=${toggleBuzzeron ? "1" : "0"}`);
         return response; // Return the response object
     } catch (error) {
         console.error("Error in getLogs:", error);
