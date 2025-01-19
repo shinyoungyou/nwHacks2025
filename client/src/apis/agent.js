@@ -21,3 +21,14 @@ export const postCalibrate = async () => {
         throw error; // Throw the error to handle it in the calling code
     }
 };
+
+export const postSettings = async () => {
+    try {
+        // Pass count as a query parameter
+        const response = await axios.post(`http://localhost:3050/calibrate`);
+        return response; // Return the response object
+    } catch (error) {
+        console.error("Error in getLogs:", error);
+        throw error; // Throw the error to handle it in the calling code
+    }
+};

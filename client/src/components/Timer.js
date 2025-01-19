@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import styled from "styled-components";
 import Navbar from "../Navbar";
 import { getLogs } from "../apis/agent";
@@ -136,6 +137,7 @@ const SecondaryButton = styled(Button)`
 
 const Timer = () => {
     const [count, setCount] = useState(0); // Default count to 0
+    const [origin, setOrigin] = useState("");
     const [logs, setLogs] = useState("");
 
     const [timeInSeconds, setTimeInSeconds] = useState(15 * 60);
@@ -145,6 +147,13 @@ const Timer = () => {
     const [seconds, setSeconds] = useState(0);
      const [hasStarted, setHasStarted] = useState(false);
     const initialTime = 15 * 60;
+    const location = useLocation();
+    const data = location.state?.calibrationData;
+
+    useEffect(()=> {
+        console.log(data);
+        setOrigin(data);
+    }, [])
 
      useEffect(() => {
      let notificationInterval;
@@ -249,6 +258,11 @@ const Timer = () => {
         setTimeInSeconds(initialTime);
         setIsRunning(true);
     };
+
+    const handleThreshold = () => {
+        let xCrossed = origin.x - 0.3 > logs.x;
+        let zCrossed = origin.z + 0.3 < logs.z;
+    }
 
     return (
         <>

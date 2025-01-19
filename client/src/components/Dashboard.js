@@ -1,5 +1,6 @@
 // LoadingScreen.jsx
 import React, { useState } from "react";
+import {useNavigate} from "react-router-dom"
 import styled from "styled-components";
 import Navbar from "../Navbar";
 import Progress from "./Progress";
@@ -73,12 +74,20 @@ const IllustrationImage = styled.img`
 
 function Dashboard() {
     const [currentSlide, setCurrentSlide] = useState(0);
+    const navigate = useNavigate();
 
     const handleClick = async () => {
         try {
             const response = await postCalibrate(); // Await the result of getLogs
             console.log("Logs received:", response); // Logs the response data
             // setLogs(response.data);
+
+            // Use navigate instead of anchor tag
+            navigate("/timer", {
+                state: {
+                    calibrationData: response.data,
+                },
+            });
         } catch (error) {
             console.error("Error fetching logs:", error);
         }
@@ -191,7 +200,7 @@ function Dashboard() {
                     {slides[currentSlide].showButton && (
                         <button
                             className="start-button"
-                            onClick={()=>setCurrentSlide((prev) => prev + 1)}
+                            onClick={() => setCurrentSlide((prev) => prev + 1)}
                         >
                             Start Calibration
                         </button>
@@ -207,9 +216,9 @@ function Dashboard() {
                         />
                     )}
                     {slides[currentSlide].showFinishButton && (
-                        <a onClick={handleClick} className="start-button" href="/timer">
+                        <button className="start-button" onClick={handleClick}>
                             Finish Calibration
-                        </a>
+                        </button>
                     )}
 
                     <DotsContainer>
