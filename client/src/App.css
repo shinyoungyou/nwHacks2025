@@ -59,9 +59,12 @@ html {
   display: flex;
   flex-direction: column;
   text-align: center;
-  height: 90vh;
+  height: 70vh;
   justify-content: center;
   row-gap: 4vh;
+  background: #FAF9FF;
+  box-sizing: border-box;
+  padding-top: 10rem;
 }
 
 .tagline {
@@ -94,29 +97,35 @@ html {
 }
 
 .features-section {
-    background-color: #333; /* Black background */
-    color: #fff; /* White text */
+    color: #000; /* White text */
     text-align: center;
     padding: 40px 20px;
 }
 
 .section-title {
-    font-size: 30px;
+    font-size: 48px;
     margin-bottom: 20px;
     text-align: left;
-    padding-left: 10px;
+    padding-left: 10%;
+    color: #333;
+}
+
+.section-desc {
+  font-size: 28px;
+  text-align: left;
+  padding-left: 10%;
 }
 
 .features-container {
     display: flex;
     justify-content: space-around;
     flex-wrap: wrap;
-    gap: 20px;
+    padding-top: 4rem;
 }
 
 .feature-card {
     padding: 20px;
-    width: 300px;
+    width: 240px;
     text-align: center;
 }
 
@@ -134,7 +143,7 @@ html {
 }
 
 .feature-description {
-    font-size: 16px;
+    font-size: 18px;
     line-height: 1.5;
 }
 
@@ -184,7 +193,10 @@ input:checked + .slider:before {
 }
 
 #scrolldown {
-  padding-top: 40px;
+  padding-top: 60px;
+  background-color: #FAF9FF;
+  display: flex;
+  justify-content: center;
 }
 
 #scrolldown p {
@@ -229,4 +241,8 @@ input:checked + .slider:before {
 /* For hover state */
 .dash svg:hover path {
   stroke: #333;
+}
+
+footer {
+  background-color: #FAF9FF;
 }

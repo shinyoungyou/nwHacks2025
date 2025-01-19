@@ -6,14 +6,14 @@ import Footer from "./components/Footer";
 function App() {
 
     return (
-        <div className="App">
+        <div>
             <Navbar timer={false} main={true} />
             <div className="center-content">
                 <p className="tagline">
                     Slouch <i>less</i>, do more.
                 </p>
                 <p className="tagline2">
-                    Real-time slouching alerts to keep <br/>
+                    Real-time slouching alerts to keep <br />
                     you productive and pain-free.
                 </p>
                 <a className="start-button" href="/dashboard">
@@ -24,15 +24,7 @@ function App() {
                 </a>
             </div>
             <div id="scrolldown" className="scrolldown-content">
-                <p>It all starts with your posture</p>
-                <video
-                    class="jw-video jw-reset"
-                    tabindex="-1"
-                    disableremoteplayback=""
-                    webkit-playsinline=""
-                    playsinline=""
-                    src="blob:https://www.spine-health.com/c7ac31b9-f90b-4fba-bca8-11d4a53c33d7"
-                ></video>
+                <img width="1000px" src="screen2 1.svg" alt="" />
             </div>
             <Features />
             <Footer />

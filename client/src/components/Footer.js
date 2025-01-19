@@ -7,8 +7,8 @@ const Footer = () => {
                 boxSizing: "border-box",
                 paddingBottom: "40px",
                 paddingLeft: "20px",
-                paddingRight: "20px",
-                paddingTop: "120px",
+                paddingRight: "3rem",
+                paddingTop: "50px",
                 width: "100%",
                 textAlign: "center",
             }}
@@ -22,15 +22,6 @@ const Footer = () => {
                     fontSize: "20px",
                 }}
             >
-                <div
-                    style={{
-                        fontSize: "30px",
-                        color: "#828282",
-                        paddingBottom: "5rem",
-                    }}
-                >
-                    nwhacks 2025 project
-                </div>
                 <span>Gunyup Chun</span>
                 <span>Sunny Weng</span>
                 <span>Donggyu Kim</span>
