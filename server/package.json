@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "export NODE_ENV=dev && node index.js",
+    "start": "export NODE_ENV=prod && node index.js"
   },
   "keywords": [],
   "author": "",
@@ -13,6 +15,7 @@
     "@influxdata/influxdb-client": "^1.35.0",
     "@serialport/parser-readline": "^13.0.0",
     "axios": "^1.7.9",
+    "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "serialport": "^13.0.0"
   }
