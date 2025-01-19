@@ -3,24 +3,13 @@ const { SerialPort } = require('serialport');
 const { ReadlineParser } = require('@serialport/parser-readline');
 const { InfluxDB, Point } = require("@influxdata/influxdb-client");
 
-// First, list available ports to find your Arduino
-// SerialPort.list().then(ports => {
-//     ports.forEach(port => {
-//         console.log(`Found port: ${port.path}`);
-//         if (port.path.includes("usbmodem")) {
-//             serialPort = new SerialPort({
-//                 path: port.path,
-//                 baudRate: 9600,
-//                 autoOpen: false,
-//             });
-//         }
-//     });
-// });
-
 async function initSerialPort() {
     const allPorts = await SerialPort.list();
     let serialPort;
     for (const port of allPorts) {
+        // Common port names:
+        // Windows: 'COM3', 'COM4', etc.
+        // Mac/Linux: '/dev/ttyACM0', '/dev/ttyUSB0', etc.
         if (port.path.includes("usbmodem")) {
             serialPort = new SerialPort({
                 path: port.path,
@@ -93,17 +82,6 @@ async function initSerialPort() {
     return serialPort;
 }
 
-// Configure the serial port
-// Note: You'll need to replace 'COM3' with your actual port name
-// Common port names:
-// Windows: 'COM3', 'COM4', etc.
-// Mac/Linux: '/dev/ttyACM0', '/dev/ttyUSB0', etc.
-// const serialPort = new SerialPort({
-//     path: '/dev/tty.usbmodem1301',
-//     baudRate: 9600,
-//     autoOpen: false
-// });
-
 const app = express();
 const port = 3050;
 
@@ -114,8 +92,6 @@ initSerialPort().then(sp => {
     });
     
     app.get("/logs", async (req, res) => {
-        // res.send(`you requested:\n - ${req.query["num_logs"]} log entries!`);
-
         const token = process.env.INFLUXDB_TOKEN;
         const url = "http://localhost:8086";
 
@@ -123,10 +99,9 @@ initSerialPort().then(sp => {
 
         let org = `SSGD`;
         let bucket = `slouchii`;
-
         let queryClient = client.getQueryApi(org);
 
-        let fluxQuery = `from(bucket: "slouchii")
+        let fluxQuery = `from(bucket: "${bucket}")
         |> range(start: -30d) 
         |> filter(fn: (r) => r["_measurement"] == "testing")
         |> sort(columns: ["_time"], desc: true)
@@ -195,8 +170,8 @@ initSerialPort().then(sp => {
 
         sp.write(`${mean.x}|${mean.y}|${mean.z}\n`, "ascii");
         sp.drain();
-        res.json(mean);
-    })
+        res.json({ calibration: mean });
+    });
     
     app.listen(port, () => {
         console.log(`Server is running on port ${port}`);
