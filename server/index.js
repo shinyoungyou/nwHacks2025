@@ -2,6 +2,7 @@ const express = require("express");
 const { SerialPort } = require('serialport');
 const { ReadlineParser } = require('@serialport/parser-readline');
 const { InfluxDB, Point } = require("@influxdata/influxdb-client");
+require("dotenv").config();
 
 async function initSerialPort() {
     const allPorts = await SerialPort.list();
@@ -92,13 +93,7 @@ app.use((req, res, next) => {
     next();
 });
 
-
 initSerialPort().then(sp => {
-    app.get("/", (req, res) => {
-        console.log("index page");
-        res.send("WElcome");
-    });
-    
     app.get("/logs", async (req, res) => {
         const token = process.env.INFLUXDB_TOKEN;
         const url = "http://localhost:8086";
@@ -155,9 +150,11 @@ initSerialPort().then(sp => {
         let org = `SSGD`;
         let bucket = `slouchii`;
 
+        const recordingTime = (process.env.NODE_ENV === "dev") ? "-10m" : "-10s";
+
         let queryClient = client.getQueryApi(org);
-        let fluxQuery = `from(bucket: "slouchii")
-        |> range(start: -10m) 
+        let fluxQuery = `from(bucket: "${bucket}")
+        |> range(start: ${recordingTime}) 
         |> filter(fn: (r) => r["_measurement"] == "testing")
         |> mean()`;
 
